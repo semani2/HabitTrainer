@@ -7,13 +7,20 @@ import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
+import android.widget.EditText
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_create_habit.*
 import java.io.IOException
 
 class CreateHabitActivity : AppCompatActivity() {
 
     private val REQUEST_CODE:Int = 101
+
+    private val TAG: String = CreateHabitActivity::class.java.simpleName
+
+    private var imageBitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +37,22 @@ class CreateHabitActivity : AppCompatActivity() {
         startActivityForResult(chooser, REQUEST_CODE)
     }
 
+    fun storeHabit(view: View) {
+        if(title_edit_text.isBlank() || description_edit_text.isBlank()) {
+            Log.d(TAG, "Blank title or description")
+            showErrorMessage("Please enter a valid title and/or description")
+            return
+        }
+
+        if(imageBitmap == null) {
+            Log.d(TAG, "No image for habit selected")
+            showErrorMessage("Please select a motivational image")
+            return
+        }
+
+
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null
                 && data.data != null) {
@@ -39,6 +62,7 @@ class CreateHabitActivity : AppCompatActivity() {
             bitmap?.let {
                 habit_image_view.visibility = View.VISIBLE
                 habit_image_view.setImageBitmap(bitmap)
+                imageBitmap = bitmap
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -52,4 +76,10 @@ class CreateHabitActivity : AppCompatActivity() {
             null
         }
     }
+
+    private fun showErrorMessage(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+    }
+
+    private fun EditText.isBlank(): Boolean = this.text.toString().isBlank()
 }
