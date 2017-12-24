@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
+import com.sai.habittrainer.db.HabitDbTable
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -17,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         habits_recycler_view.setHasFixedSize(true)
 
         habits_recycler_view.layoutManager = LinearLayoutManager(this)
-        habits_recycler_view.adapter = HabitsAdapter(listOf())
+        habits_recycler_view.adapter = HabitsAdapter(HabitDbTable(this).readAllHabits())
     }
 
 

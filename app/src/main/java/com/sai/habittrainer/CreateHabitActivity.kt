@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import com.sai.habittrainer.db.HabitDbTable
 import kotlinx.android.synthetic.main.activity_create_habit.*
 import java.io.IOException
 
@@ -50,8 +51,16 @@ class CreateHabitActivity : AppCompatActivity() {
             return
         }
 
+        val habit = Habit(title_edit_text.text.toString(), description_edit_text.text.toString(), imageBitmap!!)
+        val id = HabitDbTable(this).store(habit)
 
-
+        if(id == -1L) {
+            Log.e(TAG, "Error saving habit to dB")
+            showErrorMessage("Habit could not be saved. Please try again.")
+        } else {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
